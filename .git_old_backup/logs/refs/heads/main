@@ -1,6 +1,0 @@
-0000000000000000000000000000000000000000 1dd42d25492793083a49acad1d1d67b538dcb5bd Femi Sowemimo <145929041+femisowems@users.noreply.github.com> 1769112795 -0700	commit (initial): Initial project setup for appointment booking
-1dd42d25492793083a49acad1d1d67b538dcb5bd 4f749ab570aba153a5eedc37211a6b86a3a5cf4f Femi Sowemimo <145929041+femisowems@users.noreply.github.com> 1769113369 -0700	commit: Add mobile submodule
-4f749ab570aba153a5eedc37211a6b86a3a5cf4f 5eb0d85bc2c3e1c96046c08edb886258b6d832fe Femi Sowemimo <145929041+femisowems@users.noreply.github.com> 1769122409 -0700	commit: Add appointment booking UI components
-5eb0d85bc2c3e1c96046c08edb886258b6d832fe bf0e4f59575ee7cb38648b4c9635d5c40df74194 Femi Sowemimo <145929041+femisowems@users.noreply.github.com> 1769122709 -0700	commit: Update stack versions and enhance documentation
-bf0e4f59575ee7cb38648b4c9635d5c40df74194 fdc35a5541c26bb6787e68b546b19dbafcf3b813 Femi Sowemimo <145929041+femisowems@users.noreply.github.com> 1769129109 -0700	commit: Add Vercel deployment support for backend and web
-fdc35a5541c26bb6787e68b546b19dbafcf3b813 a61d93653d3baccfc2be7a6ca93dc02d694bd729 Femi Sowemimo <145929041+femisowems@users.noreply.github.com> 1769137230 -0700	commit: Update app title to 'Appointment Systems'
