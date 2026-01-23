@@ -1,11 +1,13 @@
 package bootstrap
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"net/http"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/femisowemimo/booking-appointment/backend/pkg/adapters/handlers"
 	"github.com/femisowemimo/booking-appointment/backend/pkg/adapters/messaging"
@@ -35,7 +37,7 @@ func GetHandler() http.Handler {
 		if err != nil {
 			log.Fatalf("Failed to connect to DB: %v", err)
 		}
-		// Note: We don't close DB here as the handler needs it. 
+		// Note: We don't close DB here as the handler needs it.
 		// It will be closed when the process terminates.
 
 		// 1.5 Run Migrations
@@ -49,7 +51,7 @@ func GetHandler() http.Handler {
 
 		var migrationBytes []byte
 		var readErr error
-		
+
 		for _, path := range paths {
 			migrationBytes, readErr = os.ReadFile(path)
 			if readErr == nil {
@@ -69,8 +71,10 @@ func GetHandler() http.Handler {
 			}
 		}
 
-		if err := db.Ping(); err != nil {
-			log.Printf("Warning: DB ping failed: %v", err)
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := db.PingContext(ctx); err != nil {
+			log.Printf("Warning: DB ping failed or timed out: %v", err)
 		}
 
 		// 2. RabbitMQ Connection
@@ -78,7 +82,7 @@ func GetHandler() http.Handler {
 		if amqpConnStr == "" {
 			amqpConnStr = "amqp://user:password@localhost:5672/"
 		}
-		
+
 		// RabbitMQ is optional for cold start if it fails (don't crash the lambda)
 		var rabbitConn *amqp.Connection
 		rabbitConn, err = amqp.Dial(amqpConnStr)
@@ -88,7 +92,7 @@ func GetHandler() http.Handler {
 
 		// 3. Initialize Adapters
 		Repo = repositories.NewPostgresAppointmentRepository(db)
-		
+
 		// Handle optional publisher
 		if rabbitConn != nil {
 			Publisher, err = messaging.NewRabbitMQPublisher(rabbitConn)

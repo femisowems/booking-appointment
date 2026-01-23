@@ -39,29 +39,28 @@ func (s *AppointmentService) Create(ctx context.Context, userID, providerID stri
 	}
 
 	// 4. Publish Event
-	event := struct {
-		EventID       string    `json:"event_id"`
-		EventType     string    `json:"event_type"`
-		AppointmentID string    `json:"appointment_id"`
-		UserID        string    `json:"user_id"`
-		ProviderID    string    `json:"provider_id"`
-		Timestamp     time.Time `json:"timestamp"`
-	}{
-		EventID:       uuid.New().String(),
-		EventType:     "AppointmentCreated",
-		AppointmentID: appt.ID,
-		UserID:        appt.UserID,
-		ProviderID:    appt.ProviderID,
-		Timestamp:     time.Now(),
-	}
+	if s.publisher != nil {
+		event := struct {
+			EventID       string    `json:"event_id"`
+			EventType     string    `json:"event_type"`
+			AppointmentID string    `json:"appointment_id"`
+			UserID        string    `json:"user_id"`
+			ProviderID    string    `json:"provider_id"`
+			Timestamp     time.Time `json:"timestamp"`
+		}{
+			EventID:       uuid.New().String(),
+			EventType:     "AppointmentCreated",
+			AppointmentID: appt.ID,
+			UserID:        appt.UserID,
+			ProviderID:    appt.ProviderID,
+			Timestamp:     time.Now(),
+		}
 
-	// Aggregate errors? Or log publishing failure?
-	// For this level of consistency, if publish fails, we might want to fail the request or use the Outbox pattern.
-	// We will simplify for now and just log/return error.
-	if err := s.publisher.Publish(ctx, event); err != nil {
-		// In production: Return success but log CRITICAL error that event wasn't published.
-		// Or use a transactional outbox so this never happens.
-		return nil, err 
+		if err := s.publisher.Publish(ctx, event); err != nil {
+			// In production: Return success but log CRITICAL error that event wasn't published.
+			// Or use a transactional outbox so this never happens.
+			return nil, err
+		}
 	}
 
 	return appt, nil
