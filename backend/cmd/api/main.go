@@ -6,9 +6,15 @@ import (
 	"os"
 
 	"github.com/femisowemimo/booking-appointment/backend/pkg/bootstrap"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load .env file if it exists
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found or error loading it (using system env)")
+	}
+
 	log.Println("Starting Appointment API Service...")
 
 	h := bootstrap.GetHandler()
