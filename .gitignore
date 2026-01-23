@@ -17,5 +17,8 @@ npm-debug.log
 yarn-error.log
 
 # Go
-/backend/bin/
-/backend/dist/
+# Handled in backend/.gitignore
+
+# Build & Test
+.vercel
+coverage
