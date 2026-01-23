@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/femisowemimo/booking-appointment/backend/internal/core/domain"
-	"github.com/femisowemimo/booking-appointment/backend/internal/core/ports"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/core/domain"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/core/ports"
 	"github.com/google/uuid"
 )
 

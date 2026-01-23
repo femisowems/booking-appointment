@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/femisowemimo/booking-appointment/backend/internal/core/domain"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/core/domain"
 )
 
 type AppointmentRepository interface {

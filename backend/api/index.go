@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/femisowemimo/booking-appointment/backend/internal/bootstrap"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/bootstrap"
 )
 
 // Handler is the entrypoint for Vercel Serverless Functions

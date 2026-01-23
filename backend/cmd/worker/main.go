@@ -9,8 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/femisowemimo/booking-appointment/backend/internal/adapters/messaging"
-	"github.com/femisowemimo/booking-appointment/backend/internal/adapters/repositories"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/adapters/messaging"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/adapters/repositories"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

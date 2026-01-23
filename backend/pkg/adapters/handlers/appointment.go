@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/femisowemimo/booking-appointment/backend/internal/core/ports"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/core/ports"
 )
 
 type AppointmentHandler struct {

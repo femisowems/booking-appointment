@@ -7,10 +7,10 @@ import (
 	"os"
 	"sync"
 
-	"github.com/femisowemimo/booking-appointment/backend/internal/adapters/handlers"
-	"github.com/femisowemimo/booking-appointment/backend/internal/adapters/messaging"
-	"github.com/femisowemimo/booking-appointment/backend/internal/adapters/repositories"
-	"github.com/femisowemimo/booking-appointment/backend/internal/core/services"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/adapters/handlers"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/adapters/messaging"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/adapters/repositories"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/core/services"
 	_ "github.com/lib/pq"
 	amqp "github.com/rabbitmq/amqp091-go"
 )

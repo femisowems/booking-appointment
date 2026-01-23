@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/femisowemimo/booking-appointment/backend/internal/bootstrap"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/bootstrap"
 )
 
 func main() {

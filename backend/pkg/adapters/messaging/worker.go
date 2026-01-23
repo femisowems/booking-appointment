@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/femisowemimo/booking-appointment/backend/internal/adapters/repositories"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/adapters/repositories"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

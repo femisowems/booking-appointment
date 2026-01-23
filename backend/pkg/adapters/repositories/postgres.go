@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/femisowemimo/booking-appointment/backend/internal/core/domain"
+	"github.com/femisowemimo/booking-appointment/backend/pkg/core/domain"
 	_ "github.com/lib/pq" // Postgres driver
 )
 
