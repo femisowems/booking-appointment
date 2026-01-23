@@ -17,7 +17,7 @@ func NewRabbitMQPublisher(conn *amqp.Connection) (*RabbitMQPublisher, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Ensure exchange exists
 	err = ch.ExchangeDeclare(
 		"events_exchange", // name
@@ -36,6 +36,9 @@ func NewRabbitMQPublisher(conn *amqp.Connection) (*RabbitMQPublisher, error) {
 }
 
 func (p *RabbitMQPublisher) Publish(ctx context.Context, event interface{}) error {
+	if p == nil {
+		return nil
+	}
 	body, err := json.Marshal(event)
 	if err != nil {
 		return err
@@ -43,8 +46,8 @@ func (p *RabbitMQPublisher) Publish(ctx context.Context, event interface{}) erro
 
 	// We could parse event type to set routing key, e.g., "appointment.created"
 	// For simplicity, hardcoding or using a generic key
-	routingKey := "appointment.event" 
-	
+	routingKey := "appointment.event"
+
 	return p.ch.PublishWithContext(ctx,
 		"events_exchange",
 		routingKey,
