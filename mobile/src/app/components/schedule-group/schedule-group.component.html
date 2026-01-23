@@ -1,0 +1,22 @@
+<div class="schedule-section">
+    <div class="section-header" (click)="toggleCollapse()">
+        <h2 class="section-title">{{ section.title }}</h2>
+        <ion-badge color="medium">{{ section.appointments.length }}</ion-badge>
+        <ion-icon *ngIf="section.isCollapsible" [name]="collapsed ? 'chevron-down' : 'chevron-up'"
+            class="collapse-icon">
+        </ion-icon>
+    </div>
+
+    <div class="section-content" *ngIf="!collapsed">
+        <app-appointment-card *ngFor="let appointment of section.appointments" [appointment]="appointment"
+            [isNextUp]="isNextUp(appointment)" [providerName]="getProviderName(appointment.provider_id)"
+            (onCancel)="onCancel($event)" (onReschedule)="onReschedule($event)" (onCheckIn)="onCheckIn($event)"
+            (onViewConflict)="onViewConflict($event)">
+        </app-appointment-card>
+
+        <div *ngIf="section.appointments.length === 0" class="empty-section">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <p>No appointments</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,4 @@
+0000000000000000000000000000000000000000 4b8e1ffec131678c9f9a74b631a6062b1f92693e Femi Sowemimo <145929041+femisowems@users.noreply.github.com> 1769107638 -0700	commit (initial): Initial commit
+4b8e1ffec131678c9f9a74b631a6062b1f92693e 87c2c96cedf24badd300db79874c40daf0d361ec Femi Sowemimo <145929041+femisowems@users.noreply.github.com> 1769113084 -0700	commit: commiting mobile aspect of the app
+87c2c96cedf24badd300db79874c40daf0d361ec d4b906fc2d21994111b249da6ae6dd3d2fde3e9c Femi Sowemimo <145929041+femisowems@users.noreply.github.com> 1769114196 -0700	commit: Enhance appointment display with more details
+d4b906fc2d21994111b249da6ae6dd3d2fde3e9c d36aab782dd6f5be9024871c350f56cefdd6f64b Femi Sowemimo <145929041+femisowems@users.noreply.github.com> 1769117772 -0700	commit: Add appointment scheduling UI and service

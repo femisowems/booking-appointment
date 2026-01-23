@@ -1,0 +1,4 @@
+# Exclude non-relevant folders from Vercel root context if mapped improperly
+# Ideally we map projects to subdirectories, but this helps the root view
+mobile/
+docker-compose.yml

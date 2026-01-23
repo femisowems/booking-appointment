@@ -1,0 +1,53 @@
+.booking-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    overflow: hidden;
+    text-align: left;
+}
+
+.booking-card-header {
+    background: linear-gradient(to right, #f8f9fa, #fff);
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.booking-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.booking-subtitle {
+    margin: var(--spacing-xs) 0 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.booking-card-content {
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* Response for dark mode if needed, but sticking to light card on light bg for now based on vars */
+@media (prefers-color-scheme: dark) {
+    .booking-card {
+        background: #1c1c1e;
+        border: 1px solid #333;
+    }
+
+    .booking-card-header {
+        background: #2c2c2e;
+        border-bottom-color: #333;
+    }
+
+    .booking-title {
+        color: #fff;
+    }
+}

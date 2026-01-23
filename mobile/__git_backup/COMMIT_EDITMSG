@@ -1,0 +1,3 @@
+Add appointment scheduling UI and service
+
+Introduces appointment card, schedule group, and sync indicator components for a new scheduling UI. Refactors home page to use grouped sections, provider selection, and improved state management. Adds ScheduleService for appointment CRUD, sync state, and offline support.
