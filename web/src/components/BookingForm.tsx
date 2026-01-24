@@ -3,7 +3,6 @@ import { api } from '../api/client';
 import { BookingCard } from './BookingCard';
 import { ProviderSelect } from './ProviderSelect';
 import { DatePicker } from './DatePicker';
-import { TimePicker } from './TimePicker';
 import { BookingSummary } from './BookingSummary';
 import { BookingStatus, type StatusType } from './BookingStatus';
 import './BookingStatus.css';
@@ -11,8 +10,7 @@ import './BookingForm.css';
 
 export const BookingForm = () => {
     const [providerId, setProviderId] = useState('provider-1');
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
+    const [startDateTime, setStartDateTime] = useState<Date | null>(null);
 
     // Status state
     const [status, setStatus] = useState<StatusType>('idle');
@@ -22,9 +20,9 @@ export const BookingForm = () => {
         e.preventDefault();
 
         // Basic Validation
-        if (!date || !time) {
+        if (!startDateTime) {
             setStatus('error');
-            setMessage('Please select both a date and a time.');
+            setMessage('Please select a date and time.');
             return;
         }
 
@@ -32,20 +30,17 @@ export const BookingForm = () => {
         setMessage('Confirming your appointment...');
 
         try {
-            // Construct datetime in LOCAL timezone, then convert to UTC for backend
-            const localDateTime = new Date(`${date}T${time}`);
-
             // Validate future date
-            if (localDateTime < new Date()) {
+            if (startDateTime < new Date()) {
                 setStatus('error');
                 setMessage('Please select a future date and time.');
                 return;
             }
 
             // Convert to ISO (UTC) for backend
-            const start = localDateTime.toISOString();
+            const start = startDateTime.toISOString();
             // Add 1 hour for end time
-            const end = new Date(localDateTime.getTime() + 60 * 60 * 1000).toISOString();
+            const end = new Date(startDateTime.getTime() + 60 * 60 * 1000).toISOString();
 
             const result = await api.createAppointment('user-demo', providerId, start, end);
 
@@ -92,26 +87,21 @@ export const BookingForm = () => {
 
                     <div className="form-row">
                         <DatePicker
-                            value={date}
-                            onChange={setDate}
-                            disabled={isSubmitting}
-                        />
-                        <TimePicker
-                            value={time}
-                            onChange={setTime}
+                            value={startDateTime}
+                            onChange={setStartDateTime}
                             disabled={isSubmitting}
                         />
                     </div>
 
                     <BookingSummary
                         providerName={getProviderName(providerId)}
-                        date={date}
-                        time={time}
+                        date={startDateTime ? startDateTime.toISOString().split('T')[0] : ''}
+                        time={startDateTime ? startDateTime.toTimeString().split(' ')[0].substring(0, 5) : ''}
                     />
 
                     <button
                         type="submit"
-                        disabled={isSubmitting || !date || !time}
+                        disabled={isSubmitting || !startDateTime}
                         className="btn-primary"
                     >
                         {isSubmitting ? 'Confirming...' : 'Confirm Booking'}
@@ -121,14 +111,13 @@ export const BookingForm = () => {
                 <div className="success-actions">
                     <BookingSummary
                         providerName={getProviderName(providerId)}
-                        date={date}
-                        time={time}
+                        date={startDateTime ? startDateTime.toISOString().split('T')[0] : ''}
+                        time={startDateTime ? startDateTime.toTimeString().split(' ')[0].substring(0, 5) : ''}
                     />
                     <button
                         onClick={() => {
                             setStatus('idle');
-                            setDate('');
-                            setTime('');
+                            setStartDateTime(null);
                             setMessage('');
                         }}
                         className="btn-secondary"
