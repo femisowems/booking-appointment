@@ -1,4 +1,5 @@
 import { Calendar } from 'primereact/calendar';
+import type { FormEvent } from 'primereact/ts-helpers';
 import './ProviderSelect.css'; // Reusing form styles
 
 interface DatePickerProps {
@@ -18,7 +19,7 @@ export const DatePicker = ({ value, onChange, disabled, min }: DatePickerProps) 
             <Calendar
                 inputId="date-picker"
                 value={value}
-                onChange={(e) => onChange(e.value || null)}
+                onChange={(e: FormEvent) => onChange(e.value || null)}
                 disabled={disabled}
                 minDate={minDate}
                 dateFormat="yy-mm-dd"
