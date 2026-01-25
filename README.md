@@ -80,3 +80,26 @@ Requests include `X-Correlation-ID` for distributed tracing.
 
 ## License
 MIT
+
+## ☁️ Production Deployment
+
+To run the backend in a production environment, use Docker.
+
+### 1. Build the Docker Image
+```bash
+docker build -t appointment-api ./backend
+```
+
+### 2. Run the Container
+Enable production mode by providing the necessary environment variables.
+
+```bash
+docker run -d \
+  -p 8080:8080 \
+  -e PORT=8080 \
+  -e DATABASE_URL="postgres://user:pass@host:5432/dbname" \
+  -e RABBITMQ_URL="amqp://user:pass@host:5672/" \
+  appointment-api
+```
+
+> **Note**: For Vercel deployment, the project comes with a `vercel.json` configuration in the `backend` directory.
