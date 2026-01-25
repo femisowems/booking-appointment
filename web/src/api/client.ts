@@ -1,4 +1,4 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+export const API_BASE_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 export interface Appointment {
   id: string;
@@ -11,20 +11,39 @@ export interface Appointment {
 
 export const api = {
   createAppointment: async (userId: string, providerId: string, start: string, end: string) => {
-    const response = await fetch(`${API_BASE_URL}/appointments`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user_id: userId,
-        provider_id: providerId,
-        start_time: start,
-        end_time: end,
-      }),
-    });
-    if (!response.ok) {
-      throw new Error(await response.text());
+    const url = `${API_BASE_URL}/appointments`;
+    const payload = {
+      user_id: userId,
+      provider_id: providerId,
+      start_time: start,
+      end_time: end,
+    };
+
+    console.log(`[API] Creating appointment at ${url}`, payload);
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        let errorMessage = `HTTP Error: ${response.status} ${response.statusText}`;
+        try {
+          const errorText = await response.text();
+          if (errorText) errorMessage += ` - ${errorText}`;
+        } catch (e) {
+          // ignore JSON parse error
+        }
+        console.error(`[API] Create failed:`, errorMessage);
+        throw new Error(errorMessage);
+      }
+      return response.json();
+    } catch (error) {
+      console.error(`[API] Network or Logic Error:`, error);
+      throw error;
     }
-    return response.json();
   },
 
   getAppointments: async (_userId: string) => {

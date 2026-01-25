@@ -14,6 +14,7 @@ export class AppointmentCardComponent {
     @Input() appointment!: AppointmentViewModel;
     @Input() isNextUp: boolean = false;
     @Input() providerName: string = '';
+    @Input() showDate: boolean = false;
 
     @Output() onCancel = new EventEmitter<string>();
     @Output() onReschedule = new EventEmitter<string>();
@@ -53,6 +54,14 @@ export class AppointmentCardComponent {
             month: 'short',
             day: 'numeric',
             year: 'numeric'
+        });
+    }
+
+    get localDateShort(): string {
+        return this.startTime.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
         });
     }
 

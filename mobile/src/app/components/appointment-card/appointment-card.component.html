@@ -4,6 +4,7 @@
         <div class="card-layout">
             <!-- Left: Time -->
             <div class="time-column">
+                <div *ngIf="showDate" class="date-display">{{ localDateShort }}</div>
                 <div class="start-time">{{ localStartTime }}</div>
                 <div class="end-time">{{ localEndTime }}</div>
                 <div *ngIf="isNextUp" class="countdown">{{ timeUntilStart }}</div>

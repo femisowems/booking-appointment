@@ -10,7 +10,8 @@
     <div class="section-content" *ngIf="!collapsed">
         <app-appointment-card *ngFor="let appointment of section.appointments" [appointment]="appointment"
             [isNextUp]="isNextUp(appointment)" [providerName]="getProviderName(appointment.provider_id)"
-            (onCancel)="onCancel($event)" (onReschedule)="onReschedule($event)" (onCheckIn)="onCheckIn($event)"
+            [showDate]="section.title === 'Upcoming' || section.title === 'Tomorrow'" (onCancel)="onCancel($event)"
+            (onReschedule)="onReschedule($event)" (onCheckIn)="onCheckIn($event)"
             (onViewConflict)="onViewConflict($event)">
         </app-appointment-card>
 
