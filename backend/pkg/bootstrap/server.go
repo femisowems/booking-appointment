@@ -31,7 +31,10 @@ func GetHandler() http.Handler {
 		// 1. Database Connection
 		dbConnStr := os.Getenv("DATABASE_URL")
 		if dbConnStr == "" {
+			log.Println("WARNING: DATABASE_URL is not set. Defaulting to localhost.")
 			dbConnStr = "postgres://user:password@localhost:5432/appointments?sslmode=disable"
+		} else {
+			log.Println("Found DATABASE_URL, attempting connection...")
 		}
 
 		// Use a recovery middleware for the entire init process in case of early panics

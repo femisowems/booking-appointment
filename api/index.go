@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"runtime/debug"
 
 	"github.com/femisowemimo/booking-appointment/backend/pkg/bootstrap"
 )
@@ -19,6 +20,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 			// Log the panic for Vercel logs
 			// In a real app, you might want to print the stack trace
 			println("PANIC RECOVERED:", err)
+			debug.PrintStack()
 		}
 	}()
 
