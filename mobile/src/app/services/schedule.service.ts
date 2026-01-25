@@ -36,7 +36,7 @@ export class ScheduleService {
     private syncState$ = new BehaviorSubject<SyncState>('SYNCED');
     private lastSyncTime$ = new BehaviorSubject<Date | null>(null);
     private pendingActions: PendingAction[] = [];
-    private apiBaseUrl = 'http://localhost:8080';
+    private apiBaseUrl = 'https://booking-appointment-backend-production.up.railway.app';
 
     constructor() {
         this.checkOnlineStatus();
