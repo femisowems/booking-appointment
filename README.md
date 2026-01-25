@@ -17,6 +17,12 @@ A production-style, event-driven appointment booking system designed to demonstr
 
 ## 🚀 Getting Started
 
+### ⚡ Quick Start (Backend)
+Run the following script to start Docker containers and the Go backend automatically:
+```bash
+./start-backend.sh
+```
+
 ### Prerequisites
 - Docker & Docker Compose
 - Go 1.23+
