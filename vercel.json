@@ -2,20 +2,19 @@
     "version": 2,
     "buildCommand": "cd web && npm install && npm run build",
     "outputDirectory": "web/dist",
-    "functions": {
-        "backend/api/index.go": {
-            "maxDuration": 10,
-            "memory": 128
-        }
-    },
     "rewrites": [
         {
             "source": "/api/(.*)",
-            "destination": "/backend/api/index.go"
+            "destination": "api/index.go"
         },
         {
             "source": "/(.*)",
             "destination": "/index.html"
         }
-    ]
+    ],
+    "functions": {
+        "api/index.go": {
+            "maxDuration": 10
+        }
+    }
 }
