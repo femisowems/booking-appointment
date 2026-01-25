@@ -151,6 +151,12 @@ func GetHandler() http.Handler {
 		mux.HandleFunc("/appointments", appointmentHandler)
 		mux.HandleFunc("/api/appointments", appointmentHandler)
 
+		// Catch-all to see what's happening with unmatched routes
+		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			log.Printf("DEBUG: Unmatched route: %s %s", r.Method, r.URL.Path)
+			http.Error(w, "Not Found (Catch-All)", http.StatusNotFound)
+		})
+
 		server = enableCORS(mux)
 	})
 	return server
@@ -158,6 +164,9 @@ func GetHandler() http.Handler {
 
 func enableCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Log every request to Vercel logs
+		log.Printf("DEBUG: Request received: %s %s RemoteAddr: %s", r.Method, r.URL.Path, r.RemoteAddr)
+
 		// Set CORS headers for ALL responses
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
