@@ -5,7 +5,7 @@
     "rewrites": [
         {
             "source": "/api/(.*)",
-            "destination": "backend/api/index.go"
+            "destination": "api/index.go"
         },
         {
             "source": "/(.*)",
@@ -13,7 +13,7 @@
         }
     ],
     "functions": {
-        "backend/api/index.go": {
+        "api/index.go": {
             "maxDuration": 10
         }
     }
