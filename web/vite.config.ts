@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://booking-appointment-backend-production.up.railway.app',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         // If the backend expects /api prefix, keeping it is fine.
         // If backend expects /appointments, we might need rewrite.

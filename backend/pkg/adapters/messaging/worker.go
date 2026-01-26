@@ -66,25 +66,27 @@ func (w *Worker) Start() error {
 		return err
 	}
 
-	forever := make(chan bool)
+	done := make(chan struct{})
 
 	go func() {
+		defer close(done)
 		for d := range msgs {
 			log.Printf("Received a message: %s", d.Body)
-			
+
 			if err := w.processMessage(d.Body); err != nil {
 				log.Printf("Error processing message: %v", err)
 				// Basic retry strategy: Nack with requeue (dangerous loop if permanent fail)
 				// For prod, use DLQ or retry count.
-				d.Nack(false, true) 
+				d.Nack(false, true)
 			} else {
 				d.Ack(false)
 			}
 		}
+		log.Println("Consumer loop exited")
 	}()
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
-	<-forever
+	<-done
 
 	return nil
 }
@@ -94,7 +96,7 @@ type EventPayload struct {
 	AppointmentID string `json:"appointment_id"`
 	ProviderID    string `json:"provider_id"`
 	StartTime     string `json:"start_time"` // Simplified: string in JSON
-	Status        string `json:"status"` // Inferred or passed
+	Status        string `json:"status"`     // Inferred or passed
 }
 
 func (w *Worker) processMessage(body []byte) error {
