@@ -9,9 +9,14 @@
 
     <div class="card-content">
         <h2 class="title">{{ eventName }}</h2>
+        <p class="venue" *ngIf="venue">
+            <ion-icon name="location-outline"></ion-icon>
+            {{ venue }}
+        </p>
         <p class="time-range">
             {{ reservation.start_time | date:'shortTime' }} - {{ reservation.end_time | date:'shortTime' }}
         </p>
+        <p class="confirmation-ref">Ref: {{ reservation.confirmationRef }}</p>
 
         <div class="actions">
             <ion-button expand="block" (click)="handleCheckIn()" [disabled]="reservation.status === 'CHECKED_IN'">

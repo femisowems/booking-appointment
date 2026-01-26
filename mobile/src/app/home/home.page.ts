@@ -283,6 +283,11 @@ export class HomePage implements OnInit, OnDestroy {
     return event?.name || id;
   }
 
+  getEventVenue(id: string): string {
+    const event = this.events.find(p => p.id === id);
+    return event?.venue || '';
+  }
+
   get hasNoReservations(): boolean {
     return this.sections.every(section => section.appointments.length === 0);
   }

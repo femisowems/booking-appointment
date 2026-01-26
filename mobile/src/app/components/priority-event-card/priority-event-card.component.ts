@@ -13,6 +13,7 @@ import { ReservationViewModel } from '../../services/schedule.service';
 export class PriorityEventCardComponent implements OnInit, OnDestroy {
     @Input() reservation!: ReservationViewModel;
     @Input() eventName: string = '';
+    @Input() venue: string = '';
 
     @Output() onCheckIn = new EventEmitter<string>();
 

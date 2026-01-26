@@ -13,6 +13,7 @@ import { ReservationViewModel } from '../../services/schedule.service';
 export class EventRowComponent {
     @Input() reservation!: ReservationViewModel;
     @Input() eventName: string = '';
+    @Input() venue: string = '';
 
     @Output() onCancel = new EventEmitter<string>();
     @Output() onReschedule = new EventEmitter<string>();
@@ -20,8 +21,32 @@ export class EventRowComponent {
 
     expanded = false;
 
+    get dateOnly(): string {
+        return new Date(this.reservation.start_time).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
     get startTimeOnly(): string {
         return new Date(this.reservation.start_time).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    }
+
+    get timeRange(): string {
+        const start = new Date(this.reservation.start_time).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        const end = new Date(this.reservation.end_time).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        return `${start} - ${end}`;
+    }
+
+    get duration(): string {
+        const start = new Date(this.reservation.start_time);
+        const end = new Date(this.reservation.end_time);
+        const diffMs = end.getTime() - start.getTime();
+        const diffMins = Math.round(diffMs / 60000);
+
+        if (diffMins < 60) {
+            return `${diffMins} min`;
+        }
+        const hours = Math.floor(diffMins / 60);
+        const mins = diffMins % 60;
+        return mins > 0 ? `${hours} hr ${mins} min` : `${hours} hr`;
     }
 
     get statusIcon(): string {

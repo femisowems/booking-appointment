@@ -16,15 +16,25 @@
 }
 
 .time-col {
-    width: 60px;
+    width: 70px;
     flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    .date {
+        font-size: 11px;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+    }
 
     .time {
         font-size: 14px;
         font-weight: 700;
         color: #111827;
         font-family: monospace;
-        /* Approximate tabular look */
     }
 }
 
@@ -34,7 +44,7 @@
     overflow: hidden;
 
     .event-name {
-        margin: 0 0 2px 0;
+        margin: 0 0 4px 0;
         font-size: 15px;
         font-weight: 500;
         color: #1f2937;
@@ -43,9 +53,29 @@
         text-overflow: ellipsis;
     }
 
+    .meta-venue {
+        margin: 0 0 2px 0;
+        font-size: 12px;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .venue-icon {
+            font-size: 14px;
+        }
+    }
+
+    .meta-time-range {
+        margin: 0 0 2px 0;
+        font-size: 12px;
+        color: #6b7280;
+        font-family: monospace;
+    }
+
     .meta-id {
         margin: 0;
-        font-size: 12px;
+        font-size: 11px;
         color: #9ca3af;
     }
 }
@@ -65,8 +95,8 @@
 .row-details {
     padding: 0 16px 16px 16px;
     border-top: 1px dashed #e5e7eb;
-    margin-left: 76px;
-    /* Align with info column */
+    margin-left: 86px;
+    /* Align with info column (70px time-col + 16px padding) */
     animation: slideDown 0.2s ease-out;
 }
 
@@ -97,6 +127,30 @@
     display: flex;
     gap: 8px;
     margin-top: 8px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    &.status-booked {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    &.status-checked_in {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    &.status-cancelled {
+        background-color: #f3f4f6;
+        color: #6b7280;
+    }
 }
 
 @keyframes slideDown {

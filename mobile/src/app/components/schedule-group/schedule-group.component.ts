@@ -26,6 +26,7 @@ export class ScheduleGroupComponent {
     @Input() onCheckIn!: (id: string) => void;
     @Input() onViewConflict!: (id: string) => void;
     @Input() getEventName!: (id: string) => string;
+    @Input() getEventVenue!: (id: string) => string;
 
     collapsed: boolean = false;
 

@@ -43,7 +43,8 @@
   <div class="schedule-container">
     <app-schedule-group *ngFor="let section of sections" [section]="section" [onCancel]="handleCancel.bind(this)"
       [onReschedule]="handleReschedule.bind(this)" [onCheckIn]="handleCheckIn.bind(this)"
-      [onViewConflict]="handleViewConflict.bind(this)" [getEventName]="getEventName.bind(this)">
+      [onViewConflict]="handleViewConflict.bind(this)" [getEventName]="getEventName.bind(this)"
+      [getEventVenue]="getEventVenue.bind(this)">
     </app-schedule-group>
 
     <!-- Empty State -->

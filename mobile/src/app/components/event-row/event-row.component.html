@@ -2,11 +2,17 @@
     <!-- Main Compact View -->
     <div class="row-main">
         <div class="time-col">
+            <span class="date">{{ dateOnly }}</span>
             <span class="time">{{ startTimeOnly }}</span>
         </div>
 
         <div class="info-col">
             <h3 class="event-name">{{ eventName }}</h3>
+            <p class="meta-venue" *ngIf="venue">
+                <ion-icon name="location-outline" class="venue-icon"></ion-icon>
+                {{ venue }}
+            </p>
+            <p class="meta-time-range">{{ timeRange }}</p>
             <p class="meta-id">Ref: {{ reservation.confirmationRef }}</p>
         </div>
 
@@ -24,7 +30,21 @@
             </div>
             <div class="detail-item">
                 <span class="label">Duration</span>
-                <span class="value">1 hr</span>
+                <span class="value">{{ duration }}</span>
+            </div>
+            <div class="detail-item" *ngIf="venue">
+                <span class="label">Location</span>
+                <span class="value">{{ venue }}</span>
+            </div>
+            <div class="detail-item" *ngIf="reservation.confirmedAt">
+                <span class="label">Booked</span>
+                <span class="value">{{ reservation.confirmedAt | date:'short' }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Status</span>
+                <span class="value status-badge" [class]="'status-' + reservation.status.toLowerCase()">
+                    {{ reservation.status }}
+                </span>
             </div>
         </div>
 

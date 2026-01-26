@@ -14,13 +14,14 @@
 
             <!-- Priority Card Case: Section is "Next Up" -->
             <app-priority-event-card *ngIf="section.title === 'Next Up'" [reservation]="reservation"
-                [eventName]="getEventName(reservation.event_id)" (onCheckIn)="onCheckIn($event)">
+                [eventName]="getEventName(reservation.event_id)" [venue]="getEventVenue(reservation.event_id)"
+                (onCheckIn)="onCheckIn($event)">
             </app-priority-event-card>
 
             <!-- Standard Row Case -->
             <app-event-row *ngIf="section.title !== 'Next Up'" [reservation]="reservation"
-                [eventName]="getEventName(reservation.event_id)" (onCancel)="onCancel($event)"
-                (onReschedule)="onReschedule($event)">
+                [eventName]="getEventName(reservation.event_id)" [venue]="getEventVenue(reservation.event_id)"
+                (onCancel)="onCancel($event)" (onReschedule)="onReschedule($event)">
             </app-event-row>
 
         </ng-container>
