@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-backend-project.vercel.app'
+  apiUrl: 'https://booking-appointment-backend-production.up.railway.app'
 };
