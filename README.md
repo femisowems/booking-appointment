@@ -5,10 +5,11 @@ A production-style, event-driven appointment booking system designed to demonstr
 ## 🏗 Architecture
 
 **Stack**:
-- **Backend**: Go (1.23+)
+- **Backend**: Go 1.23+ (Hexagonal Architecture)
 - **Database**: PostgreSQL (System of Record), DynamoDB (Read Model)
 - **Messaging**: RabbitMQ
-- **Frontend**: React 19 (Web), Ionic 8 / Angular 20 (Mobile)
+- **Frontend (Web)**: React 19, Vite, PrimeReact
+- **Frontend (Mobile)**: Ionic 8, Angular 20, Capacitor 8
 
 **Flow**:
 1. User books via API -> Writes to Postgres.
@@ -37,15 +38,19 @@ Run the following script to start Docker containers and the Go backend automatic
 
 2. **Run Migrations**
    ```bash
+   navigate to the backend directory
+   cd backend
    make migrate-up
    ```
 
 3. **Start Services**
    ```bash
    # Terminal 1: API
+   cd backend
    go run cmd/api/main.go
 
    # Terminal 2: Worker
+   cd backend
    go run cmd/worker/main.go
    ```
 
@@ -67,11 +72,12 @@ Run the following script to start Docker containers and the Go backend automatic
 
 ## 📂 Project Structure
 
-- `cmd/`: Entry points for applications.
-- `internal/core`: Pure domain logic (Hexagonal Architecture).
-- `internal/adapters`: Infrastructure implementations (SQL, HTTP, AMQP).
-- `web/`: React Frontend.
-- `mobile/`: Ionic Frontend.
+- `backend/`: Main Go source code.
+  - `cmd/`: Entry points for applications (`api`, `worker`).
+  - `pkg/`: Core domain logic and adapters (Hexagonal Architecture).
+  - `migrations/`: Database migration files.
+- `web/`: React/Vite Frontend.
+- `mobile/`: Ionic/Angular Frontend.
 
 ## 🔧 Observability
 
