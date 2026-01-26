@@ -4,10 +4,16 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export type SyncState = 'SYNCED' | 'SYNCING' | 'OFFLINE' | 'ERROR';
 export type ConfirmationState = 'CONFIRMED' | 'PENDING' | 'FAILED';
 
-export interface AppointmentViewModel {
+export interface Event {
+    id: string;
+    name: string;
+    venue: string;
+}
+
+export interface ReservationViewModel {
     id: string;
     user_id: string;
-    provider_id: string;
+    event_id: string;
     start_time: string;
     end_time: string;
     status: string;
@@ -23,7 +29,7 @@ export interface AppointmentViewModel {
 
 interface PendingAction {
     type: 'CANCEL' | 'RESCHEDULE' | 'CHECKIN';
-    appointmentId: string;
+    reservationId: string;
     data?: any;
     timestamp: Date;
 }
@@ -32,20 +38,58 @@ interface PendingAction {
     providedIn: 'root'
 })
 export class ScheduleService {
-    private appointments$ = new BehaviorSubject<AppointmentViewModel[]>([]);
+    private reservations$ = new BehaviorSubject<ReservationViewModel[]>([]);
+    private events$ = new BehaviorSubject<Event[]>([]);
     private syncState$ = new BehaviorSubject<SyncState>('SYNCED');
     private lastSyncTime$ = new BehaviorSubject<Date | null>(null);
     private pendingActions: PendingAction[] = [];
     private apiBaseUrl = 'https://booking-appointment-backend-production.up.railway.app';
+    // Use localhost for dev if needed, or environment variable. 
+    // Ideally we should switch based on environment but for now this is what was here.
+    // wait, the user's previous error 500 showed they were using localhost in web.
+    // Mobile might be using the prod URL. I should check if I need to update this URL.
+    // The previous file content shows `apiBaseUrl` as the railway app.
+    // If I want to use my local backend, I should probably update this or use a proxy.
+    // But since I'm running `go run` locally, unless I expose it, mobile (if on device) can't see it.
+    // If mobile is browser (ionic serve), it can see localhost. 
 
     constructor() {
+        // If we are in dev mode (localhost), replace the URL
+        if (window.location.hostname === 'localhost') {
+            this.apiBaseUrl = 'http://localhost:8080/api';
+            // Note: Backend might need /api prefix or not depending on server.go
+            // My server.go has /api/reservations AND /events (root) AND /api/events
+            // So /api prefix is safer.
+        }
+
         this.checkOnlineStatus();
         window.addEventListener('online', () => this.handleOnline());
         window.addEventListener('offline', () => this.handleOffline());
     }
 
-    getAppointments(): Observable<AppointmentViewModel[]> {
-        return this.appointments$.asObservable();
+    getReservations(): Observable<ReservationViewModel[]> {
+        return this.reservations$.asObservable();
+    }
+
+    getEvents(): Observable<Event[]> {
+        return this.events$.asObservable();
+    }
+
+    async refreshEvents(): Promise<void> {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/events`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            this.events$.next(data);
+        } catch (error) {
+            console.error('Failed to fetch events:', error);
+            // Fallback for demo if API fails
+            this.events$.next([
+                { id: 'event-1', name: 'Late Night Comedy (Offline)', venue: 'The Basement Club' },
+                { id: 'event-2', name: 'Jazz Quartet (Offline)', venue: 'Blue Note Lounge' },
+                { id: 'event-3', name: 'Indie Film Festival (Offline)', venue: 'Cinema 4' }
+            ]);
+        }
     }
 
     getSyncState(): Observable<SyncState> {
@@ -56,40 +100,40 @@ export class ScheduleService {
         return this.lastSyncTime$.asObservable();
     }
 
-    async refresh(providerId: string, startDate: Date, endDate: Date): Promise<void> {
+    async refresh(eventId: string, startDate: Date, endDate: Date): Promise<void> {
         this.syncState$.next('SYNCING');
 
         try {
             const params = new URLSearchParams({
-                provider_id: providerId,
+                event_id: eventId,
                 start_date: startDate.toISOString(),
                 end_date: endDate.toISOString()
             });
 
-            const response = await fetch(`${this.apiBaseUrl}/appointments?${params.toString()}`);
+            const response = await fetch(`${this.apiBaseUrl}/reservations?${params.toString()}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
 
             const data = await response.json();
-            const appointments = (data || []).map((appt: any) => this.mapToViewModel(appt));
+            const reservations = (data || []).map((res: any) => this.mapToViewModel(res));
 
-            this.appointments$.next(appointments);
+            this.reservations$.next(reservations);
             this.lastSyncTime$.next(new Date());
             this.syncState$.next('SYNCED');
         } catch (error) {
-            console.error('Failed to refresh appointments:', error);
+            console.error('Failed to refresh reservations:', error);
             this.syncState$.next('ERROR');
             throw error;
         }
     }
 
-    async cancelAppointment(id: string): Promise<void> {
+    async cancelReservation(id: string): Promise<void> {
         const traceId = crypto.randomUUID();
 
         // Optimistic update
-        const current = this.appointments$.value;
+        const current = this.reservations$.value;
         const targetIndex = current.findIndex(a => a.id === id);
 
         if (targetIndex === -1) return;
@@ -97,10 +141,10 @@ export class ScheduleService {
         const original = { ...current[targetIndex] };
         const updated = [...current];
         updated[targetIndex] = { ...original, status: 'CANCELLING' };
-        this.appointments$.next(updated);
+        this.reservations$.next(updated);
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/appointments/${id}/cancel`, {
+            const response = await fetch(`${this.apiBaseUrl}/reservations/${id}/cancel`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -112,25 +156,25 @@ export class ScheduleService {
                 throw new Error(`Failed to cancel: ${response.status}`);
             }
 
-            // Remove the appointment on success
-            this.appointments$.next(current.filter(a => a.id !== id));
+            // Remove the reservation on success
+            this.reservations$.next(current.filter(a => a.id !== id));
         } catch (error) {
             console.error(`[TRACE: ${traceId}] Cancel failed:`, error);
 
             // Rollback on failure
-            this.appointments$.next(current);
+            this.reservations$.next(current);
 
             // Queue for retry if offline
             if (!navigator.onLine) {
-                this.queueAction({ type: 'CANCEL', appointmentId: id, timestamp: new Date() });
+                this.queueAction({ type: 'CANCEL', reservationId: id, timestamp: new Date() });
             }
 
             throw error;
         }
     }
 
-    async rescheduleAppointment(id: string, newStartTime: Date, newEndTime: Date): Promise<void> {
-        const current = this.appointments$.value;
+    async rescheduleReservation(id: string, newStartTime: Date, newEndTime: Date): Promise<void> {
+        const current = this.reservations$.value;
         const targetIndex = current.findIndex(a => a.id === id);
 
         if (targetIndex === -1) return;
@@ -145,10 +189,10 @@ export class ScheduleService {
             end_time: newEndTime.toISOString(),
             status: 'RESCHEDULING'
         };
-        this.appointments$.next(updated);
+        this.reservations$.next(updated);
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/appointments/${id}`, {
+            const response = await fetch(`${this.apiBaseUrl}/reservations/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -169,19 +213,19 @@ export class ScheduleService {
 
             // Update with backend response
             updated[targetIndex] = this.mapToViewModel(result);
-            this.appointments$.next(updated);
+            this.reservations$.next(updated);
         } catch (error) {
             console.error('Reschedule failed:', error);
 
             // Rollback
-            this.appointments$.next(current);
+            this.reservations$.next(current);
 
             throw error;
         }
     }
 
     async checkIn(id: string): Promise<void> {
-        const current = this.appointments$.value;
+        const current = this.reservations$.value;
         const targetIndex = current.findIndex(a => a.id === id);
 
         if (targetIndex === -1) return;
@@ -189,10 +233,10 @@ export class ScheduleService {
         // Optimistic update
         const updated = [...current];
         updated[targetIndex] = { ...updated[targetIndex], status: 'CHECKED_IN' };
-        this.appointments$.next(updated);
+        this.reservations$.next(updated);
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/appointments/${id}/checkin`, {
+            const response = await fetch(`${this.apiBaseUrl}/reservations/${id}/checkin`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -202,27 +246,27 @@ export class ScheduleService {
             }
         } catch (error) {
             console.error('Check-in failed:', error);
-            this.appointments$.next(current);
+            this.reservations$.next(current);
             throw error;
         }
     }
 
-    private mapToViewModel(appt: any): AppointmentViewModel {
+    private mapToViewModel(res: any): ReservationViewModel {
         return {
-            id: appt.id,
-            user_id: appt.user_id,
-            provider_id: appt.provider_id,
-            start_time: appt.start_time,
-            end_time: appt.end_time,
-            status: appt.status,
-            confirmationState: appt.created_at ? 'CONFIRMED' : 'PENDING',
-            confirmedAt: appt.created_at ? new Date(appt.created_at) : undefined,
-            confirmationRef: appt.id ? `A-${appt.id.substring(0, 4).toUpperCase()}` : undefined,
-            hasConflict: appt.has_conflict || false,
-            conflictingIds: appt.conflicting_ids || [],
-            version: appt.version,
-            created_at: appt.created_at,
-            updated_at: appt.updated_at
+            id: res.id,
+            user_id: res.user_id,
+            event_id: res.event_id,
+            start_time: res.start_time,
+            end_time: res.end_time,
+            status: res.status,
+            confirmationState: res.created_at ? 'CONFIRMED' : 'PENDING',
+            confirmedAt: res.created_at ? new Date(res.created_at) : undefined,
+            confirmationRef: res.id ? `R-${res.id.substring(0, 4).toUpperCase()}` : undefined,
+            hasConflict: res.has_conflict || false,
+            conflictingIds: res.conflicting_ids || [],
+            version: res.version,
+            created_at: res.created_at,
+            updated_at: res.updated_at
         };
     }
 
@@ -256,17 +300,17 @@ export class ScheduleService {
             try {
                 switch (action.type) {
                     case 'CANCEL':
-                        await this.cancelAppointment(action.appointmentId);
+                        await this.cancelReservation(action.reservationId);
                         break;
                     case 'RESCHEDULE':
-                        await this.rescheduleAppointment(
-                            action.appointmentId,
+                        await this.rescheduleReservation(
+                            action.reservationId,
                             new Date(action.data.start_time),
                             new Date(action.data.end_time)
                         );
                         break;
                     case 'CHECKIN':
-                        await this.checkIn(action.appointmentId);
+                        await this.checkIn(action.reservationId);
                         break;
                 }
             } catch (error) {

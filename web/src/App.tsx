@@ -1,5 +1,5 @@
 import './App.css'
-import { BookingForm } from './components/BookingForm'
+import { TicketBookingFlow } from './components/TicketBookingFlow'
 import { useClock } from './hooks/useClock'
 
 function App() {
@@ -7,9 +7,9 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Appointment Systems</h1>
+      <h1>Event Tickets</h1>
       <p className="current-time">{dateString} • {timeString}</p>
-      <BookingForm />
+      <TicketBookingFlow />
     </div>
   )
 }

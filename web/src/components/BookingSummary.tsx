@@ -1,12 +1,12 @@
 import './BookingSummary.css';
 
 interface BookingSummaryProps {
-    providerName: string;
+    eventName: string;
     date: string;
     time: string;
 }
 
-export const BookingSummary = ({ providerName, date, time }: BookingSummaryProps) => {
+export const BookingSummary = ({ eventName, date, time }: BookingSummaryProps) => {
     // Helper to format date nicely
     const formatDate = (dateStr: string) => {
         if (!dateStr) return '';
@@ -35,15 +35,15 @@ export const BookingSummary = ({ providerName, date, time }: BookingSummaryProps
         }
     }
 
-    if (!providerName && !date && !time) return null;
+    if (!eventName && !date && !time) return null;
 
     return (
         <div className="booking-summary">
             <h3 className="summary-title">Summary</h3>
             <div className="summary-details">
                 <div className="summary-item">
-                    <span className="summary-label">Provider</span>
-                    <span className="summary-value">{providerName || 'Pending...'}</span>
+                    <span className="summary-label">Event</span>
+                    <span className="summary-value">{eventName || 'Pending...'}</span>
                 </div>
                 <div className="summary-item">
                     <span className="summary-label">Date</span>

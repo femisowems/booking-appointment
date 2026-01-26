@@ -1,0 +1,42 @@
+<div class="event-row" [class.expanded]="expanded" (click)="toggleExpand()">
+    <!-- Main Compact View -->
+    <div class="row-main">
+        <div class="time-col">
+            <span class="time">{{ startTimeOnly }}</span>
+        </div>
+
+        <div class="info-col">
+            <h3 class="event-name">{{ eventName }}</h3>
+            <p class="meta-id">Ref: {{ reservation.confirmationRef }}</p>
+        </div>
+
+        <div class="status-col">
+            <ion-icon [name]="statusIcon" [color]="statusColor" class="status-icon"></ion-icon>
+        </div>
+    </div>
+
+    <!-- Expanded Details -->
+    <div class="row-details" *ngIf="expanded">
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="label">Date</span>
+                <span class="value">{{ reservation.start_time | date:'mediumDate' }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Duration</span>
+                <span class="value">1 hr</span>
+            </div>
+        </div>
+
+        <div class="actions-bar">
+            <ion-button fill="outline" size="small" color="medium" (click)="handleReschedule($event)"
+                [disabled]="reservation.status !== 'BOOKED'">
+                Reschedule
+            </ion-button>
+            <ion-button fill="outline" size="small" color="danger" (click)="handleCancel($event)"
+                [disabled]="reservation.status !== 'BOOKED'">
+                Cancel
+            </ion-button>
+        </div>
+    </div>
+</div>

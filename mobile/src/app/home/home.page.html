@@ -1,51 +1,39 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      My Schedule
-      <p class="subtitle">{{ currentDateString }} • {{ currentTimeString }}</p>
-    </ion-title>
-    <ion-buttons slot="end">
-      <app-sync-indicator [syncState]="syncState" [lastSyncTime]="lastSyncTime">
-      </app-sync-indicator>
-    </ion-buttons>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="transparent-toolbar">
+    <div class="header-row">
+      <h1 class="page-title">Schedule</h1>
+      <app-sync-indicator [syncState]="syncState"></app-sync-indicator>
+    </div>
+
+    <!-- Inline Date -->
+    <p class="header-date">{{ currentDateString }}</p>
+
+    <!-- Minimal Segment -->
+    <div class="custom-segment">
+      <button [class.active]="viewMode === 'day'" (click)="viewMode = 'day'; loadReservations()">Day</button>
+      <button [class.active]="viewMode === 'week'" (click)="viewMode = 'week'; loadReservations()">Week</button>
+      <button [class.active]="viewMode === 'month'" (click)="viewMode = 'month'; loadReservations()">Month</button>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-
-<ion-content [fullscreen]="true">
-  <!-- Pull to Refresh -->
-  <ion-refresher slot="fixed" (ionRefresh)="loadAppointments()">
+<ion-content [fullscreen]="true" class="bg-light">
+  <ion-refresher slot="fixed" (ionRefresh)="loadReservations()">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">My Schedule</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Simplified Event Selector -->
+  <!-- We'll keep it but make it minimal in CSS -->
 
-  <!-- View Mode Selector -->
-  <ion-segment [(ngModel)]="viewMode" (ionChange)="loadAppointments()">
-    <ion-segment-button value="day">
-      <ion-label>Day</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="week">
-      <ion-label>Week</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="month">
-      <ion-label>Month</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-
-  <!-- Doctor Selector -->
+  <!-- Event Selector -->
   <div class="provider-selector">
     <ion-item lines="none">
-      <ion-icon name="person-circle-outline" slot="start" color="primary"></ion-icon>
-      <ion-label>Doctor</ion-label>
-      <ion-select [(ngModel)]="selectedProvider" (ionChange)="onProviderChange($event)" interface="popover"
-        placeholder="Select Doctor">
-        <ion-select-option *ngFor="let provider of providers" [value]="provider.id">
-          {{ provider.name }}
+      <ion-icon name="calendar-number-outline" slot="start" color="primary"></ion-icon>
+      <ion-label>Event</ion-label>
+      <ion-select [(ngModel)]="selectedEvent" (ionChange)="onEventChange($event)" interface="popover"
+        placeholder="Select Event">
+        <ion-select-option *ngFor="let event of events" [value]="event.id">
+          {{ event.name }}
         </ion-select-option>
       </ion-select>
     </ion-item>
@@ -55,15 +43,15 @@
   <div class="schedule-container">
     <app-schedule-group *ngFor="let section of sections" [section]="section" [onCancel]="handleCancel.bind(this)"
       [onReschedule]="handleReschedule.bind(this)" [onCheckIn]="handleCheckIn.bind(this)"
-      [onViewConflict]="handleViewConflict.bind(this)" [getProviderName]="getProviderName.bind(this)">
+      [onViewConflict]="handleViewConflict.bind(this)" [getEventName]="getEventName.bind(this)">
     </app-schedule-group>
 
     <!-- Empty State -->
-    <div *ngIf="hasNoAppointments" class="empty-state">
+    <div *ngIf="hasNoReservations" class="empty-state">
       <ion-icon name="calendar-outline"></ion-icon>
-      <h2>No Appointments</h2>
-      <p>You have no scheduled appointments for this period.</p>
-      <ion-button (click)="loadAppointments()">
+      <h2>No Reservations</h2>
+      <p>You have no scheduled reservations for this period.</p>
+      <ion-button (click)="loadReservations()">
         <ion-icon slot="start" name="refresh"></ion-icon>
         Refresh
       </ion-button>

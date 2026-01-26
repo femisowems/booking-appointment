@@ -1,25 +1,27 @@
 export const API_BASE_URL = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
-export interface Appointment {
+export interface Reservation {
   id: string;
   user_id: string;
-  provider_id: string;
+  event_id: string;
   start_time: string;
   end_time: string;
+  ticket_count: number;
   status: 'BOOKED' | 'CANCELLED' | 'COMPLETED';
 }
 
 export const api = {
-  createAppointment: async (userId: string, providerId: string, start: string, end: string) => {
-    const url = `${API_BASE_URL}/appointments`;
+  createReservation: async (userId: string, eventId: string, start: string, end: string, ticketCount: number) => {
+    const url = `${API_BASE_URL}/reservations`;
     const payload = {
       user_id: userId,
-      provider_id: providerId,
+      event_id: eventId,
       start_time: start,
       end_time: end,
+      ticket_count: ticketCount,
     };
 
-    console.log(`[API] Creating appointment at ${url}`, payload);
+    console.log(`[API] Creating reservation at ${url}`, payload);
 
     try {
       const response = await fetch(url, {
@@ -46,7 +48,7 @@ export const api = {
     }
   },
 
-  getAppointments: async (_userId: string) => {
+  getReservations: async (_userId: string) => {
     // In a real app we'd filter by user_id
     // but for this demo endpoint we might need adjustment or just use ID fetch
     // For list view we might rely on the read model API (not yet built for HTTP, just DynamoDB)
