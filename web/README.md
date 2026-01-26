@@ -1,10 +1,10 @@
-# Appointment Booking Frontend
+# Event Reservation Frontend
 
-This is the React frontend for the Appointment Booking System. It provides a user-friendly interface for customers to book appointments with providers.
+This is the React frontend for the Event Reservation System. It provides a user-friendly interface for customers to reserve tickets for events.
 
 ## ✨ Features
 
-- **Provider Selection:** Choose from available doctors (Dr. Smith, Dr. Jones).
+- **Event Selection:** Choose from available events (Comedy, Jazz, Film Festival).
 - **Smart Date & Time Picking:** 
   - Prevents booking in the past.
   - Automatically handles timezone conversions (validates locally, sends UTC).

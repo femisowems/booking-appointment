@@ -1,6 +1,6 @@
-# Appointment Booking Service
+# Event Reservation Service
 
-A production-style, event-driven appointment booking system designed to demonstrate modern backend engineering practices in Go.
+A production-style, event-driven reservation booking system designed to demonstrate modern backend engineering practices in Go.
 
 ## 🏗 Architecture
 
@@ -13,7 +13,7 @@ A production-style, event-driven appointment booking system designed to demonstr
 
 **Flow**:
 1. User books via API -> Writes to Postgres.
-2. API publishes `AppointmentCreated` event.
+2. API publishes `ReservationCreated` event.
 3. Worker consumes event -> Updates DynamoDB & sends notification.
 
 ## 🚀 Getting Started
@@ -93,7 +93,7 @@ To run the backend in a production environment, use Docker.
 
 ### 1. Build the Docker Image
 ```bash
-docker build -t appointment-api ./backend
+docker build -t reservation-api ./backend
 ```
 
 ### 2. Run the Container
@@ -105,7 +105,7 @@ docker run -d \
   -e PORT=8080 \
   -e DATABASE_URL="postgres://user:pass@host:5432/dbname" \
   -e RABBITMQ_URL="amqp://user:pass@host:5672/" \
-  appointment-api
+  reservation-api
 ```
 
 > **Note**: For Vercel deployment, the project comes with a `vercel.json` configuration in the `backend` directory.

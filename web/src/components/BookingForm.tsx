@@ -123,7 +123,7 @@ export const BookingForm = () => {
                         }}
                         className="btn-secondary"
                     >
-                        Book Another Appointment
+                        Make Another Reservation
                     </button>
                 </div>
             )}
