@@ -45,6 +45,7 @@ export const EventItem: React.FC<EventItemProps> = ({ id, name, venue, onReserve
                     <div className="section-label">Select Showtime</div>
                     <ShowtimeSelector
                         eventId={id}
+                        date={new Date()}
                         selectedTime={selectedSlot?.start || null}
                         onSelectTime={handleSelectTime}
                     />
