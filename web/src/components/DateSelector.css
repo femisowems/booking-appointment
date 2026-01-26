@@ -1,0 +1,46 @@
+.date-selector {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 8px;
+    /* Space for scrollbar if needed, or touch area */
+    margin-bottom: 16px;
+
+    /* Hide scrollbar for cleaner look */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+}
+
+.date-selector::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+}
+
+.date-pill {
+    flex: 0 0 auto;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #4b5563;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.date-pill:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.date-pill.selected {
+    background: #6366f1;
+    color: white;
+    border-color: #6366f1;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+    font-weight: 600;
+}

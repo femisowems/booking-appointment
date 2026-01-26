@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { api } from '../api/client';
 import { BookingCard } from './BookingCard';
-import { ProviderSelect } from './ProviderSelect';
+import { EventSelect } from './EventSelect';
 import { DatePicker } from './DatePicker';
 import { BookingSummary } from './BookingSummary';
 import { BookingStatus, type StatusType } from './BookingStatus';
@@ -9,7 +9,7 @@ import './BookingStatus.css';
 import './BookingForm.css';
 
 export const BookingForm = () => {
-    const [providerId, setProviderId] = useState('provider-1');
+    const [eventId, setEventId] = useState('event-1');
     const [startDateTime, setStartDateTime] = useState<Date | null>(null);
 
     // Status state
@@ -27,7 +27,7 @@ export const BookingForm = () => {
         }
 
         setStatus('loading');
-        setMessage('Confirming your appointment...');
+        setMessage('Confirming your reservation...');
 
         try {
             // Validate future date
@@ -42,17 +42,17 @@ export const BookingForm = () => {
             // Add 1 hour for end time
             const end = new Date(startDateTime.getTime() + 60 * 60 * 1000).toISOString();
 
-            const result = await api.createAppointment('user-demo', providerId, start, end);
+            const result = await api.createReservation('user-demo', eventId, start, end, 1);
 
             setStatus('success');
-            setMessage(`Appointment confirmed! Reference ID: ${result.id}`);
+            setMessage(`Reservation confirmed! Reference ID: ${result.id}`);
 
             // Optional: Reset form after success or keep it to show confirmation
             // setDate('');
             // setTime('');
         } catch (err: any) {
             setStatus('error');
-            setMessage(err.message || 'Failed to book appointment. Please try again.');
+            setMessage(err.message || 'Failed to book. Please try again.');
         }
     };
 
@@ -61,10 +61,11 @@ export const BookingForm = () => {
         setMessage('');
     };
 
-    const getProviderName = (id: string) => {
-        if (id === 'provider-1') return 'Dr. Smith';
-        if (id === 'provider-2') return 'Dr. Jones';
-        return 'Unknown Provider';
+    const getEventName = (id: string) => {
+        if (id === 'event-1') return 'Late Night Comedy';
+        if (id === 'event-2') return 'Jazz Quartet';
+        if (id === 'event-3') return 'Indie Film Festival';
+        return 'Unknown Event';
     }
 
     const isSubmitting = status === 'loading';
@@ -72,16 +73,16 @@ export const BookingForm = () => {
 
     return (
         <BookingCard
-            title={isSuccess ? "Booking Confirmed" : "Book Confirmation"}
-            subtitle={isSuccess ? "Your appointment details are below." : "Secure your slot with Dr. Smith or Dr. Jones"}
+            title={isSuccess ? "Reservation Confirmed" : "Book Reservation"}
+            subtitle={isSuccess ? "Your details are below." : "Secure your slot"}
         >
             <BookingStatus status={status} message={message} onDismiss={handleDismissError} />
 
             {!isSuccess ? (
                 <form onSubmit={handleSubmit} className="booking-form">
-                    <ProviderSelect
-                        value={providerId}
-                        onChange={setProviderId}
+                    <EventSelect
+                        value={eventId}
+                        onChange={setEventId}
                         disabled={isSubmitting}
                     />
 
@@ -94,7 +95,7 @@ export const BookingForm = () => {
                     </div>
 
                     <BookingSummary
-                        providerName={getProviderName(providerId)}
+                        eventName={getEventName(eventId)}
                         date={startDateTime ? startDateTime.toISOString().split('T')[0] : ''}
                         time={startDateTime ? startDateTime.toTimeString().split(' ')[0].substring(0, 5) : ''}
                     />
@@ -110,7 +111,7 @@ export const BookingForm = () => {
             ) : (
                 <div className="success-actions">
                     <BookingSummary
-                        providerName={getProviderName(providerId)}
+                        eventName={getEventName(eventId)}
                         date={startDateTime ? startDateTime.toISOString().split('T')[0] : ''}
                         time={startDateTime ? startDateTime.toTimeString().split(' ')[0].substring(0, 5) : ''}
                     />

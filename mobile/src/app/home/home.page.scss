@@ -34,6 +34,73 @@ ion-title {
   }
 }
 
+/* Minimal Header */
+.transparent-toolbar {
+  --background: #ffffff;
+  padding: 16px 16px 8px 16px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #111827;
+}
+
+.header-date {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Custom Pill Segment */
+.custom-segment {
+  display: flex;
+  background: #f3f4f6;
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+
+  button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    transition: all 0.2s;
+
+    &.active {
+      background: #ffffff;
+      color: #111827;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+.bg-light {
+  --background: #ffffff;
+  /* Keep it clean white for rows */
+}
+
+.provider-selector {
+  margin: 16px;
+  /* Minimal border */
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;

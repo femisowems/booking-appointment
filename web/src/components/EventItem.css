@@ -1,0 +1,102 @@
+.event-item {
+    background: white;
+    border-bottom: 1px solid #eee;
+    padding: 16px 0;
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.event-name {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #111;
+}
+
+.event-venue {
+    margin: 4px 0 0 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.view-showtimes-btn,
+.reserve-btn {
+    background: #000;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.view-showtimes-btn:hover,
+.reserve-btn:hover {
+    opacity: 0.8;
+}
+
+.view-showtimes-btn {
+    font-size: 0.85rem;
+}
+
+.event-details {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed #eee;
+}
+
+.section-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #888;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.booking-actions {
+    margin-top: 20px;
+    background: #fdfdfd;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+}
+
+.ticket-q-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.price-display {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.reserve-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,74 @@
+.my-tickets-section {
+    margin-top: 40px;
+    border-top: 1px solid #eee;
+    padding-top: 24px;
+}
+
+.tickets-header {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.tickets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ticket-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.ticket-status-bar {
+    height: 4px;
+    width: 100%;
+}
+
+.ticket-status-bar[data-status="PENDING"] {
+    background: #f1c40f;
+}
+
+.ticket-status-bar[data-status="BOOKED"],
+.ticket-status-bar[data-status="CONFIRMED"] {
+    background: #2ecc71;
+}
+
+.ticket-status-bar[data-status="CANCELLED"] {
+    background: #e74c3c;
+}
+
+.ticket-content {
+    padding: 12px 16px;
+}
+
+.ticket-event {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.ticket-time {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.ticket-count {
+    font-size: 0.85rem;
+    margin-top: 8px;
+    display: inline-block;
+    background: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.pending-helper {
+    font-size: 0.8rem;
+    color: #f39c12;
+    margin-top: 8px;
+    font-style: italic;
+}

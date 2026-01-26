@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule, AlertController, ModalController, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import { ScheduleService, AppointmentViewModel, SyncState } from '../services/schedule.service';
+import { ScheduleService, ReservationViewModel, SyncState } from '../services/schedule.service';
 import { ScheduleGroupComponent, ScheduleSection } from '../components/schedule-group/schedule-group.component';
 import { SyncIndicatorComponent } from '../components/sync-indicator/sync-indicator.component';
 
@@ -19,15 +19,13 @@ export class HomePage implements OnInit, OnDestroy {
   viewMode: 'day' | 'week' | 'month' = 'day';
   syncState: SyncState = 'SYNCED';
   lastSyncTime: Date | null = null;
-  selectedProvider: string = 'provider-1';
+  selectedEvent: string = 'event-1';
   currentTime: Date = new Date();
   private clockInterval?: number;
 
-  // Available providers
-  providers = [
-    { id: 'provider-1', name: 'Dr. Smith' },
-    { id: 'provider-2', name: 'Dr. Jones' }
-  ];
+  // Available events
+  // Available events
+  events: any[] = [];
 
   private destroy$ = new Subject<void>();
 
@@ -39,17 +37,38 @@ export class HomePage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    // Load saved provider preference
-    const savedProvider = localStorage.getItem('selectedProvider');
-    if (savedProvider && this.providers.some(p => p.id === savedProvider)) {
-      this.selectedProvider = savedProvider;
+    // Subscribe to events
+    this.scheduleService.getEvents()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(events => {
+        this.events = events;
+
+        // Auto-select first event if none selected or selection invalid
+        if (this.events.length > 0) {
+          if (!this.selectedEvent || !this.events.some(e => e.id === this.selectedEvent)) {
+            this.selectedEvent = this.events[0].id;
+            // Also save to storage so it persists
+            localStorage.setItem('selectedEvent', this.selectedEvent);
+            // Trigger load for this new selection
+            this.loadReservations();
+          }
+        }
+      });
+
+    // Load saved event preference
+    const savedEvent = localStorage.getItem('selectedEvent');
+    if (savedEvent) {
+      this.selectedEvent = savedEvent;
     }
 
-    // Subscribe to appointments
-    this.scheduleService.getAppointments()
+    // Trigger loads
+    this.scheduleService.refreshEvents();
+
+    // Subscribe to reservations
+    this.scheduleService.getReservations()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(appointments => {
-        this.sections = this.groupAppointments(appointments);
+      .subscribe(reservations => {
+        this.sections = this.groupReservations(reservations);
       });
 
     // Subscribe to sync state
@@ -67,7 +86,7 @@ export class HomePage implements OnInit, OnDestroy {
       });
 
     // Initial load
-    this.loadAppointments();
+    this.loadReservations();
 
     // Start live clock
     this.startClock();
@@ -110,7 +129,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
-  async loadAppointments() {
+  async loadReservations() {
     const now = new Date();
     let start: Date, end: Date;
 
@@ -129,22 +148,22 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     try {
-      await this.scheduleService.refresh(this.selectedProvider, start, end);
+      await this.scheduleService.refresh(this.selectedEvent, start, end);
     } catch (error) {
-      console.error('Failed to load appointments:', error);
-      this.showErrorToast('Failed to load appointments');
+      console.error('Failed to load reservations:', error);
+      this.showErrorToast('Failed to load reservations');
     }
   }
 
   async handleCancel(id: string) {
-    const appointment = this.findAppointmentById(id);
-    if (!appointment) return;
+    const reservation = this.findReservationById(id);
+    if (!reservation) return;
 
     const alert = await this.alertController.create({
-      header: 'Cancel Appointment?',
+      header: 'Cancel Reservation?',
       message: `
-        <strong>Patient:</strong> ${appointment.user_id}<br>
-        <strong>Time:</strong> ${new Date(appointment.start_time).toLocaleString()}<br><br>
+        <strong>User:</strong> ${reservation.user_id}<br>
+        <strong>Time:</strong> ${new Date(reservation.start_time).toLocaleString()}<br><br>
         This action cannot be undone.
       `,
       buttons: [
@@ -157,11 +176,11 @@ export class HomePage implements OnInit, OnDestroy {
           role: 'destructive',
           handler: async () => {
             try {
-              await this.scheduleService.cancelAppointment(id);
-              this.showSuccessToast('Appointment cancelled');
+              await this.scheduleService.cancelReservation(id);
+              this.showSuccessToast('Reservation cancelled');
             } catch (error) {
               console.error('Failed to cancel:', error);
-              this.showErrorToast('Failed to cancel appointment');
+              this.showErrorToast('Failed to cancel reservation');
             }
           }
         }
@@ -172,11 +191,11 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async handleReschedule(id: string) {
-    const appointment = this.findAppointmentById(id);
-    if (!appointment) return;
+    const reservation = this.findReservationById(id);
+    if (!reservation) return;
 
     const alert = await this.alertController.create({
-      header: 'Reschedule Appointment',
+      header: 'Reschedule Reservation',
       message: 'This feature opens a datetime picker (not implemented in this demo)',
       buttons: [
         {
@@ -188,16 +207,16 @@ export class HomePage implements OnInit, OnDestroy {
           handler: async () => {
             // TODO: Implement datetime picker modal
             // For now, just reschedule to 1 hour later
-            const newStart = new Date(new Date(appointment.start_time).getTime() + 60 * 60 * 1000);
-            const newEnd = new Date(new Date(appointment.end_time).getTime() + 60 * 60 * 1000);
+            const newStart = new Date(new Date(reservation.start_time).getTime() + 60 * 60 * 1000);
+            const newEnd = new Date(new Date(reservation.end_time).getTime() + 60 * 60 * 1000);
 
             try {
-              await this.scheduleService.rescheduleAppointment(id, newStart, newEnd);
-              await this.showUndoToast(appointment, newStart);
+              await this.scheduleService.rescheduleReservation(id, newStart, newEnd);
+              await this.showUndoToast(reservation, newStart);
             } catch (error) {
               console.error('Failed to reschedule:', error);
               if (error instanceof Error && error.message === 'CONFLICT') {
-                this.showErrorToast('Someone else modified this appointment. Please refresh.');
+                this.showErrorToast('Someone else modified this reservation. Please refresh.');
               } else {
                 this.showErrorToast('Failed to reschedule');
               }
@@ -213,7 +232,7 @@ export class HomePage implements OnInit, OnDestroy {
   async handleCheckIn(id: string) {
     try {
       await this.scheduleService.checkIn(id);
-      this.showSuccessToast('Patient checked in');
+      this.showSuccessToast('Checked in');
     } catch (error) {
       console.error('Failed to check in:', error);
       this.showErrorToast('Failed to check in');
@@ -221,17 +240,17 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async handleViewConflict(id: string) {
-    const appointment = this.findAppointmentById(id);
-    if (!appointment || !appointment.conflictingIds?.length) return;
+    const reservation = this.findReservationById(id);
+    if (!reservation || !reservation.conflictingIds?.length) return;
 
     const alert = await this.alertController.create({
       header: '⚠️ Scheduling Conflict',
-      message: `This slot overlaps with ${appointment.conflictingIds.length} other appointment(s)`,
+      message: `This slot overlaps with ${reservation.conflictingIds.length} other reservation(s)`,
       buttons: [
         {
-          text: 'View Other Appointment',
+          text: 'View Other Reservation',
           handler: () => {
-            // TODO: Navigate to conflicting appointment
+            // TODO: Navigate to conflicting reservation
           }
         },
         {
@@ -244,42 +263,42 @@ export class HomePage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async onProviderChange(event: any) {
-    const newProvider = event.detail.value;
-    this.selectedProvider = newProvider;
+  async onEventChange(event: any) {
+    const newEvent = event.detail.value;
+    this.selectedEvent = newEvent;
 
     // Save the preference
-    localStorage.setItem('selectedProvider', newProvider);
+    localStorage.setItem('selectedEvent', newEvent);
 
-    // Reload appointments for the new provider
-    await this.loadAppointments();
+    // Reload reservations for the new event
+    await this.loadReservations();
 
     // Show feedback
-    const providerName = this.getProviderName(newProvider);
-    this.showSuccessToast(`Switched to ${providerName}'s schedule`);
+    const eventName = this.getEventName(newEvent);
+    this.showSuccessToast(`Switched to ${eventName}'s schedule`);
   }
 
-  getProviderName(id: string): string {
-    const provider = this.providers.find(p => p.id === id);
-    return provider?.name || id;
+  getEventName(id: string): string {
+    const event = this.events.find(p => p.id === id);
+    return event?.name || id;
   }
 
-  get hasNoAppointments(): boolean {
+  get hasNoReservations(): boolean {
     return this.sections.every(section => section.appointments.length === 0);
   }
 
-  private groupAppointments(appointments: AppointmentViewModel[]): ScheduleSection[] {
+  private groupReservations(reservations: ReservationViewModel[]): ScheduleSection[] {
     const now = new Date();
 
-    const nextAppt = this.findNextAppointment(appointments, now);
-    const laterToday = this.getLaterTodayAppointments(appointments, now, nextAppt);
-    const tomorrow = this.getTomorrowAppointments(appointments, now);
-    const upcoming = this.getUpcomingAppointments(appointments, now);
+    const nextRes = this.findNextReservation(reservations, now);
+    const laterToday = this.getLaterTodayReservations(reservations, now, nextRes);
+    const tomorrow = this.getTomorrowReservations(reservations, now);
+    const upcoming = this.getUpcomingReservations(reservations, now);
 
     return [
       {
         title: 'Next Up',
-        appointments: nextAppt ? [nextAppt] : [],
+        appointments: nextRes ? [nextRes] : [],
         isCollapsible: false
       },
       {
@@ -300,29 +319,29 @@ export class HomePage implements OnInit, OnDestroy {
     ];
   }
 
-  private findNextAppointment(appointments: AppointmentViewModel[], now: Date): AppointmentViewModel | null {
-    const upcoming = appointments
+  private findNextReservation(reservations: ReservationViewModel[], now: Date): ReservationViewModel | null {
+    const upcoming = reservations
       .filter(a => new Date(a.start_time) > now && a.status === 'BOOKED')
       .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
     return upcoming[0] || null;
   }
 
-  private getLaterTodayAppointments(appointments: AppointmentViewModel[], now: Date, nextAppt: AppointmentViewModel | null): AppointmentViewModel[] {
+  private getLaterTodayReservations(reservations: ReservationViewModel[], now: Date, nextRes: ReservationViewModel | null): ReservationViewModel[] {
     const endOfDay = new Date(now);
     endOfDay.setHours(23, 59, 59, 999);
 
-    return appointments
+    return reservations
       .filter(a => {
         const start = new Date(a.start_time);
         return start > now &&
           start <= endOfDay &&
-          a.id !== nextAppt?.id;
+          a.id !== nextRes?.id;
       })
       .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
   }
 
-  private getTomorrowAppointments(appointments: AppointmentViewModel[], now: Date): AppointmentViewModel[] {
+  private getTomorrowReservations(reservations: ReservationViewModel[], now: Date): ReservationViewModel[] {
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
@@ -330,7 +349,7 @@ export class HomePage implements OnInit, OnDestroy {
     const endOfTomorrow = new Date(tomorrow);
     endOfTomorrow.setHours(23, 59, 59, 999);
 
-    return appointments
+    return reservations
       .filter(a => {
         const start = new Date(a.start_time);
         return start >= tomorrow && start <= endOfTomorrow;
@@ -338,20 +357,23 @@ export class HomePage implements OnInit, OnDestroy {
       .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
   }
 
-  private getUpcomingAppointments(appointments: AppointmentViewModel[], now: Date): AppointmentViewModel[] {
+  private getUpcomingReservations(reservations: ReservationViewModel[], now: Date): ReservationViewModel[] {
     const dayAfterTomorrow = new Date(now);
     dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
     dayAfterTomorrow.setHours(0, 0, 0, 0);
 
-    return appointments
+    return reservations
       .filter(a => new Date(a.start_time) >= dayAfterTomorrow)
       .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
   }
 
-  private findAppointmentById(id: string): AppointmentViewModel | null {
+  private findReservationById(id: string): ReservationViewModel | null {
     for (const section of this.sections) {
-      const found = section.appointments.find(a => a.id === id);
-      if (found) return found;
+      // NOTE: `section.appointments` might still be typed as `any` or `AppointmentViewModel` 
+      // if I strictly renamed things in groupReservations but ScheduleSection interface depends on AppointmentViewModel.
+      // I need to check ScheduleGroupComponent.
+      const found = section.appointments.find((a: any) => a.id === id);
+      if (found) return found as ReservationViewModel;
     }
     return null;
   }
@@ -377,7 +399,7 @@ export class HomePage implements OnInit, OnDestroy {
     await toast.present();
   }
 
-  private async showUndoToast(original: AppointmentViewModel, newTime: Date) {
+  private async showUndoToast(original: ReservationViewModel, newTime: Date) {
     const toast = await this.toastController.create({
       message: `Rescheduled to ${newTime.toLocaleTimeString()}`,
       duration: 5000,
@@ -387,7 +409,7 @@ export class HomePage implements OnInit, OnDestroy {
           text: 'Undo',
           handler: async () => {
             try {
-              await this.scheduleService.rescheduleAppointment(
+              await this.scheduleService.rescheduleReservation(
                 original.id,
                 new Date(original.start_time),
                 new Date(original.end_time)

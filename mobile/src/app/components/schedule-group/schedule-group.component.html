@@ -1,23 +1,32 @@
 <div class="schedule-section">
-    <div class="section-header" (click)="toggleCollapse()">
+    <!-- Simplified Header: Only show if collapsible or title is significant -->
+    <div class="section-header" *ngIf="section.title !== 'Next Up'" (click)="toggleCollapse()">
         <h2 class="section-title">{{ section.title }}</h2>
-        <ion-badge color="medium">{{ section.appointments.length }}</ion-badge>
+        <!-- <ion-badge color="medium">{{ section.appointments.length }}</ion-badge> -->
         <ion-icon *ngIf="section.isCollapsible" [name]="collapsed ? 'chevron-down' : 'chevron-up'"
             class="collapse-icon">
         </ion-icon>
     </div>
 
     <div class="section-content" *ngIf="!collapsed">
-        <app-appointment-card *ngFor="let appointment of section.appointments" [appointment]="appointment"
-            [isNextUp]="isNextUp(appointment)" [providerName]="getProviderName(appointment.provider_id)"
-            [showDate]="section.title === 'Upcoming' || section.title === 'Tomorrow'" (onCancel)="onCancel($event)"
-            (onReschedule)="onReschedule($event)" (onCheckIn)="onCheckIn($event)"
-            (onViewConflict)="onViewConflict($event)">
-        </app-appointment-card>
+        <!-- Loop for items -->
+        <ng-container *ngFor="let reservation of section.appointments">
+
+            <!-- Priority Card Case: Section is "Next Up" -->
+            <app-priority-event-card *ngIf="section.title === 'Next Up'" [reservation]="reservation"
+                [eventName]="getEventName(reservation.event_id)" (onCheckIn)="onCheckIn($event)">
+            </app-priority-event-card>
+
+            <!-- Standard Row Case -->
+            <app-event-row *ngIf="section.title !== 'Next Up'" [reservation]="reservation"
+                [eventName]="getEventName(reservation.event_id)" (onCancel)="onCancel($event)"
+                (onReschedule)="onReschedule($event)">
+            </app-event-row>
+
+        </ng-container>
 
         <div *ngIf="section.appointments.length === 0" class="empty-section">
-            <ion-icon name="calendar-outline"></ion-icon>
-            <p>No appointments</p>
+            <p>No reservations</p>
         </div>
     </div>
 </div>

@@ -1,0 +1,23 @@
+<ion-card class="priority-card">
+    <div class="card-hero">
+        <div class="status-badge">
+            <span class="pulse-dot"></span>
+            Next Up
+        </div>
+        <div class="countdown">{{ timeLeft }}</div>
+    </div>
+
+    <div class="card-content">
+        <h2 class="title">{{ eventName }}</h2>
+        <p class="time-range">
+            {{ reservation.start_time | date:'shortTime' }} - {{ reservation.end_time | date:'shortTime' }}
+        </p>
+
+        <div class="actions">
+            <ion-button expand="block" (click)="handleCheckIn()" [disabled]="reservation.status === 'CHECKED_IN'">
+                <ion-icon slot="start" name="qr-code-outline"></ion-icon>
+                {{ reservation.status === 'CHECKED_IN' ? 'Checked In' : 'Check In Now' }}
+            </ion-button>
+        </div>
+    </div>
+</ion-card>

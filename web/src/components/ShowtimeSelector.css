@@ -1,0 +1,67 @@
+.showtime-list {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 4px;
+    /* Space for scrollbar */
+
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.showtime-list::-webkit-scrollbar {
+    display: none;
+}
+
+.showtime-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: white;
+    color: #333;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.showtime-btn:hover {
+    border-color: #666;
+    background: #f9f9f9;
+}
+
+.showtime-btn.selected {
+    background: #333;
+    background: #6366f1;
+    /* Indigo-500 */
+    color: white;
+    border-color: #6366f1;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
+    font-weight: 600;
+}
+
+.showtime-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f3f4f6;
+    border-color: #f3f4f6;
+    color: #9ca3af;
+}
+
+/* Loading/Error States */
+.loading-slots,
+.error-slots {
+    padding: 20px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.error-slots {
+    color: #ef4444;
+    background: #fef2f2;
+}

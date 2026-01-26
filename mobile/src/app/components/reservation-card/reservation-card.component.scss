@@ -1,0 +1,146 @@
+ion-card {
+  margin: 8px 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &.next-up {
+    border-left: 4px solid var(--ion-color-warning);
+    background: var(--ion-color-warning-tint);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+  }
+
+  &.has-conflict {
+    border-left: 4px solid var(--ion-color-warning);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.card-layout {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.time-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4px;
+
+  .date-display {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .start-time {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+  }
+
+  .end-time {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+    margin-top: 2px;
+  }
+
+  .countdown {
+    font-size: 11px;
+    color: var(--ion-color-warning);
+    font-weight: 600;
+    margin-top: 4px;
+    padding: 2px 6px;
+    background: var(--ion-color-warning-tint);
+    border-radius: 4px;
+  }
+}
+
+.details-column {
+  flex: 1;
+
+  .patient-name {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  .reference-id {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    color: var(--ion-color-medium);
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+
+    ion-icon {
+      font-size: 16px;
+    }
+
+    .status-text {
+      font-size: 13px;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .confirmation-icon {
+      margin-left: auto;
+    }
+  }
+
+  .conflict-warning {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    background: var(--ion-color-warning-tint);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--ion-color-warning-shade);
+    margin-top: 8px;
+
+    ion-icon {
+      font-size: 16px;
+    }
+
+    ion-button {
+      margin-left: auto;
+      --padding-start: 4px;
+      --padding-end: 4px;
+    }
+  }
+
+  .expanded-details {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--ion-color-light);
+
+    p {
+      margin: 4px 0;
+      font-size: 13px;
+      color: var(--ion-color-medium-shade);
+    }
+  }
+}
+
+.actions-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
