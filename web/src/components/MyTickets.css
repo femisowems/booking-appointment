@@ -44,7 +44,8 @@
     background: #2ecc71;
 }
 
-.ticket-status-bar[data-status="CANCELLED"] {
+.ticket-status-bar[data-status="CANCELLED"],
+.ticket-status-bar[data-status="FAILED"] {
     background: #e74c3c;
 }
 
