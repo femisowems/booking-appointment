@@ -1,6 +1,6 @@
-# Booking Appointment - Mobile Application (Android)
+# Event Reservation - Mobile Application (Android)
 
-This is the mobile client for the Booking Appointment System, built with **Ionic Angular** and **Capacitor**.
+This is the mobile client for the Event Reservation System, built with **Ionic Angular** and **Capacitor**.
 
 ## Prerequisites
 
@@ -35,7 +35,7 @@ If you haven't already initialized Capacitor or added the Android platform:
 
 ```bash
 # Initialize Capacitor (if not done)
-npx cap init "Booking App" com.example.bookingapp --web-dir=www
+npx cap init "Event Reservation" com.example.eventreservation --web-dir=www
 
 # Add Android Platform
 npm install @capacitor/android

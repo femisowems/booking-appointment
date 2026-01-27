@@ -1,6 +1,6 @@
-# Event Reservation Service
+# Event Reservation System
 
-A production-style, event-driven reservation booking system designed to demonstrate modern backend engineering practices in Go.
+A production-style, event-driven reservation system designed to demonstrate modern backend engineering practices in Go.
 
 ## 🏗 Architecture
 
@@ -12,7 +12,7 @@ A production-style, event-driven reservation booking system designed to demonstr
 - **Frontend (Mobile)**: Ionic 8, Angular 20, Capacitor 8
 
 **Flow**:
-1. User books via API -> Writes to Postgres.
+1. User creates reservation via API -> Writes to Postgres.
 2. API publishes `ReservationCreated` event.
 3. Worker consumes event -> Updates DynamoDB & sends notification.
 

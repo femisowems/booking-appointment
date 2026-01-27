@@ -6,13 +6,13 @@ This is the React frontend for the Event Reservation System. It provides a user-
 
 - **Event Selection:** Choose from available events (Comedy, Jazz, Film Festival).
 - **Smart Date & Time Picking:** 
-  - Prevents booking in the past.
+  - Prevents reservations in the past.
   - Automatically handles timezone conversions (validates locally, sends UTC).
   - Visual layout optimized for clarity.
-- **State-Driven Booking Flow:**
+- **State-Driven Reservation Flow:**
   - **Idle:** Clean form for input.
   - **Loading:** Spinner and disabled inputs during network requests.
-  - **Success:** Confirmation card with a reference ID.
+  - **Success:** Confirmation card with a reservation ID.
   - **Error:** Dismissible alerts for validation or API errors.
 - **Accessibility (A11y):** ARIA live regions for status updates, keyboard-navigable inputs, and high-contrast styling.
 - **Responsive Design:** Mobile-friendly card layout.
@@ -37,7 +37,8 @@ web/src/
 │   ├── BookingSummary.tsx   # Request summary view
 │   ├── DatePicker.tsx       # Custom date input wrapper
 │   ├── TimePicker.tsx       # Custom time input wrapper
-│   └── ProviderSelect.tsx   # Dropdown component
+│   ├── MyTickets.tsx        # User's ticket view
+│   └── TicketBookingFlow.tsx # Orchestrator for the reservation flow
 ├── hooks/           # Custom React hooks (e.g., useClock)
 └── App.tsx          # Root component
 ```
