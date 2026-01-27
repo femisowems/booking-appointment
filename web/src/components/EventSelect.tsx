@@ -11,6 +11,9 @@ const EVENTS: Event[] = [
     { id: 'event-1', name: 'Late Night Comedy (The Basement Club)' },
     { id: 'event-2', name: 'Jazz Quartet (Blue Note Lounge)' },
     { id: 'event-3', name: 'Indie Film Festival (Cinema 4)' },
+    { id: 'event-4', name: 'Tech Conference 2026 (Convention Center)' },
+    { id: 'event-5', name: 'Live Podcast Recording (Studio A)' },
+    { id: 'event-6', name: 'Charity Gala (Grand Ballroom)' },
 ];
 
 interface EventSelectProps {

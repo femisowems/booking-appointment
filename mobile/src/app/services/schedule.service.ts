@@ -87,7 +87,10 @@ export class ScheduleService {
             this.events$.next([
                 { id: 'event-1', name: 'Late Night Comedy (Offline)', venue: 'The Basement Club' },
                 { id: 'event-2', name: 'Jazz Quartet (Offline)', venue: 'Blue Note Lounge' },
-                { id: 'event-3', name: 'Indie Film Festival (Offline)', venue: 'Cinema 4' }
+                { id: 'event-3', name: 'Indie Film Festival (Offline)', venue: 'Cinema 4' },
+                { id: 'event-4', name: 'Tech Conference 2026 (Offline)', venue: 'Convention Center' },
+                { id: 'event-5', name: 'Live Podcast Recording (Offline)', venue: 'Studio A' },
+                { id: 'event-6', name: 'Charity Gala (Offline)', venue: 'Grand Ballroom' }
             ]);
         }
     }

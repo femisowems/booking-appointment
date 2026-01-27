@@ -32,6 +32,9 @@ export const TicketBookingFlow: React.FC = () => {
             { id: 'event-1', name: 'Late Night Comedy', venue: 'The Basement Club' },
             { id: 'event-2', name: 'Jazz Quartet', venue: 'Blue Note Lounge' },
             { id: 'event-3', name: 'Indie Film Festival', venue: 'Cinema 4' },
+            { id: 'event-4', name: 'Tech Conference 2026', venue: 'Convention Center' },
+            { id: 'event-5', name: 'Live Podcast Recording', venue: 'Studio A' },
+            { id: 'event-6', name: 'Charity Gala', venue: 'Grand Ballroom' },
         ];
         setEvents(mockEvents);
     }, []);
