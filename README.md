@@ -1,6 +1,6 @@
 # Event Reservation System
 
-A production-style, event-driven reservation system designed to demonstrate modern backend engineering practices in Go.
+Interview Prep: A production-style, event-driven reservation system designed to demonstrate modern backend engineering practices in Go.
 
 ## 🏗 Architecture
 
