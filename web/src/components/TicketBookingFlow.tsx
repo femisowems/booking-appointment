@@ -22,6 +22,7 @@ interface Ticket {
 export const TicketBookingFlow: React.FC = () => {
     const [events, setEvents] = useState<Event[]>([]);
     const [tickets, setTickets] = useState<Ticket[]>([]);
+    const myTicketsRef = React.useRef<HTMLDivElement>(null);
 
     // Mock User ID
     const userId = 'user-demo';
@@ -59,6 +60,11 @@ export const TicketBookingFlow: React.FC = () => {
         };
 
         setTickets(prev => [newTicket, ...prev]);
+
+        // Scroll to tickets section
+        setTimeout(() => {
+            myTicketsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
 
         try {
             // 2. Call API
@@ -98,7 +104,7 @@ export const TicketBookingFlow: React.FC = () => {
                 ))}
             </div>
 
-            <div className="my-tickets-divider">
+            <div className="my-tickets-divider" ref={myTicketsRef}>
                 {tickets.length > 0 && <span>Your Reservations</span>}
             </div>
 
